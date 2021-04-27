@@ -430,9 +430,13 @@ class Preferences(component.Component):
             'spin_seed_time_ratio_limit': ('value', 'seed_time_ratio_limit'),
             'spin_seed_time_limit': ('value', 'seed_time_limit'),
             'chk_share_ratio': ('active', 'stop_seed_at_ratio'),
+            'chk_share_time': ('active', 'stop_seed_at_time'),
             'spin_share_ratio': ('value', 'stop_seed_ratio'),
+            'spin_share_time': ('value', 'stop_seed_time'),
             'radio_pause_ratio': ('active', 'stop_seed_at_ratio'),
+            'radio_pause_time': ('active', 'stop_seed_at_time'),
             'radio_remove_ratio': ('active', 'remove_seed_at_ratio'),
+            'radio_stop_after_ratio_and_time': ('active', 'stop_seed_after_ratio_and_time'),
             'spin_cache_size': ('value', 'cache_size'),
             'spin_cache_expiry': ('value', 'cache_expiry'),
             'combo_proxy_type': ('active', lambda: self.core_config['proxy']['type']),
@@ -838,11 +842,20 @@ class Preferences(component.Component):
         new_core_config['stop_seed_at_ratio'] = self.builder.get_object(
             'chk_share_ratio'
         ).get_active()
+        new_core_config['stop_seed_at_time'] = self.builder.get_object(
+            'chk_share_time'
+        ).get_active()
         new_core_config['remove_seed_at_ratio'] = self.builder.get_object(
             'radio_remove_ratio'
         ).get_active()
+        new_core_config['stop_seed_after_ratio_and_time'] = self.builder.get_object(
+            'radio_stop_after_ratio_and_time'
+        ).get_active()
         new_core_config['stop_seed_ratio'] = self.builder.get_object(
             'spin_share_ratio'
+        ).get_value()
+        new_core_config['stop_seed_time'] = self.builder.get_object(
+            'spin_share_time'
         ).get_value()
         new_core_config['share_ratio_limit'] = self.builder.get_object(
             'spin_share_ratio_limit'

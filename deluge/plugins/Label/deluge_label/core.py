@@ -51,7 +51,10 @@ OPTIONS_DEFAULTS = {
     'apply_queue': False,
     'is_auto_managed': False,
     'stop_at_ratio': False,
+    'stop_at_time': False,
+    'stop_after_ratio_and_time': False,
     'stop_ratio': 2.0,
+    'stop_time': 48.0,
     'remove_at_ratio': False,
     'apply_move_completed': False,
     'move_completed': False,
@@ -214,7 +217,10 @@ class Core(CorePluginBase):
         if options['apply_queue']:
             torrent.set_auto_managed(options['is_auto_managed'])
             torrent.set_stop_at_ratio(options['stop_at_ratio'])
+            torrent.set_stop_at_time(options['stop_at_time'])
+            torrent.set_stop_after_ratio_and_time(options['stop_after_ratio_and_time'])
             torrent.set_stop_ratio(options['stop_ratio'])
+            torrent.set_stop_time(options['stop_time'])
             torrent.set_remove_at_ratio(options['remove_at_ratio'])
 
         if options['apply_move_completed']:
@@ -249,7 +255,10 @@ class Core(CorePluginBase):
         if options['apply_queue']:
             torrent.set_auto_managed(self.core_cfg.config['auto_managed'])
             torrent.set_stop_at_ratio(self.core_cfg.config['stop_seed_at_ratio'])
+            torrent.set_stop_at_time(self.core_cfg.config['stop_seed_at_time'])
+            torrent.set_stop_after_ratio_and_time(self.core_cfg.config['stop_seed_after_ratio_and_time'])
             torrent.set_stop_ratio(self.core_cfg.config['stop_seed_ratio'])
+            torrent.set_stop_time(self.core_cfg.config['stop_seed_time'])
             torrent.set_remove_at_ratio(self.core_cfg.config['remove_seed_at_ratio'])
 
         if options['apply_move_completed']:

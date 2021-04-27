@@ -265,8 +265,28 @@ Deluge.ux.LabelOptionsWindow = Ext.extend(Ext.Window, {
                                             disabled: true,
                                         },
                                         {
+                                            boxLabel: _('Stop seed at time:'),
+                                            name: 'stop_at_time',
+                                            disabled: true,
+                                        },
+                                        {
+                                            xtype: 'spinnerfield',
+                                            name: 'stop_time',
+                                            width: 60,
+                                            decimalPrecision: 2,
+                                            incrementValue: 0.1,
+                                            style:
+                                                'position: relative; left: 100px',
+                                            disabled: true,
+                                        },
+                                        {
                                             boxLabel: _('Remove at ratio'),
                                             name: 'remove_at_ratio',
+                                            disabled: true,
+                                        },
+                                        {
+                                            boxLabel: _('Remove after ratio and time'),
+                                            name: 'stop_after_ratio_and_time',
                                             disabled: true,
                                         },
                                     ],

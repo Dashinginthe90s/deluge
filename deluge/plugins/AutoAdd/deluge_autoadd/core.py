@@ -53,7 +53,10 @@ OPTIONS_AVAILABLE = {  # option: builtin
     'prioritize_first_last': True,
     'auto_managed': True,
     'stop_at_ratio': True,
+    'stop_at_time': True,
+    'stop_after_ratio_and_time': True,
     'stop_ratio': True,
+    'stop_time': True,
     'remove_at_ratio': True,
     'move_completed': True,
     'move_completed_path': True,
@@ -218,6 +221,8 @@ class Core(CorePluginBase):
         options = {}
         if 'stop_at_ratio_toggle' in watchdir:
             watchdir['stop_ratio_toggle'] = watchdir['stop_at_ratio_toggle']
+        if 'stop_at_time_toggle' in watchdir:
+            watchdir['stop_time_toggle'] = watchdir['stop_at_time_toggle']
         # We default to True when reading _toggle values, so a config
         # without them is valid, and applies all its settings.
         for option, value in watchdir.items():

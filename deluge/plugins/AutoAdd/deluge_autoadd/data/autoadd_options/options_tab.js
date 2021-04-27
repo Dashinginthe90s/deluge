@@ -153,15 +153,82 @@ Deluge.ux.AutoAdd.AutoAddOptionsPanel = Ext.extend(Ext.Panel, {
                                     Ext.getCmp('stop_ratio').setDisabled(
                                         !checked
                                     );
-                                    Ext.getCmp('remove_at_ratio').setDisabled(
-                                        !checked
-                                    );
+                                    
+                                    if (
+                                        checked 
+                                        || Ext.getCmp('stop_at_time_toggle').checked
+                                    ) {
+                                        Ext.getCmp('remove_at_ratio').setDisabled(false);
+                                    } else {
+                                        Ext.getCmp('remove_at_ratio').setDisabled(true);
+                                    }
+                                    
+                                    if (
+                                        checked 
+                                        && Ext.getCmp('stop_at_time_toggle').checked
+                                    ) {
+                                        Ext.getCmp('stop_after_ratio_and_time').setDisabled(false);
+                                    } else {
+                                        Ext.getCmp('stop_after_ratio_and_time').setDisabled(true);
+                                    }
                                 },
                             },
                         },
                         {
                             xtype: 'spinnerfield',
                             id: 'stop_ratio',
+                            hideLabel: true,
+                            disabled: true,
+                            value: 0.0,
+                            minValue: 0.0,
+                            maxValue: 100.0,
+                            decimalPrecision: 1,
+                            incrementValue: 0.1,
+                            style: 'margin-left: 2px',
+                            width: 100,
+                        },
+                    ],
+                },
+                {
+                    xtype: 'container',
+                    layout: 'hbox',
+                    hideLabel: true,
+                    items: [
+                        {
+                            xtype: 'checkbox',
+                            id: 'stop_at_time_toggle',
+                            boxLabel: _('Stop seeding after:'),
+                            hideLabel: true,
+                            width: 175,
+                            listeners: {
+                                check: function (cb, checked) {
+                                    Ext.getCmp('stop_time').setDisabled(
+                                        !checked
+                                    );
+                                    
+                                    if (
+                                        checked 
+                                        || Ext.getCmp('stop_at_ratio_toggle').checked
+                                    ) {
+                                        Ext.getCmp('remove_at_ratio').setDisabled(false);
+                                    } else {
+                                        Ext.getCmp('remove_at_ratio').setDisabled(true);
+                                    }
+                                    
+                                    if (
+                                        checked 
+                                        && Ext.getCmp('stop_at_ratio_toggle').checked
+                                    ) {
+                                        Ext.getCmp('stop_after_ratio_and_time').setDisabled(false);
+                                    } else {
+                                        Ext.getCmp('stop_after_ratio_and_time').setDisabled(true);
+                                    }
+                                },
+                            },
+                        },
+                        {
+                            xtype: 'spinnerfield',
+                            id: 'stop_time',
                             hideLabel: true,
                             disabled: true,
                             value: 0.0,
@@ -190,6 +257,20 @@ Deluge.ux.AutoAdd.AutoAddOptionsPanel = Ext.extend(Ext.Panel, {
                         {
                             xtype: 'checkbox',
                             id: 'remove_at_ratio_toggle',
+                            disabled: true,
+                            checked: true,
+                            hidden: true,
+                        },
+                        {
+                            xtype: 'checkbox',
+                            id: 'stop_after_ratio_and_time',
+                            boxLabel: _('Remove after ratio and time'),
+                            disabled: true,
+                            checked: true,
+                        },
+                        {
+                            xtype: 'checkbox',
+                            id: 'stop_after_ratio_and_time_toggle',
                             disabled: true,
                             checked: true,
                             hidden: true,

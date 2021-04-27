@@ -130,12 +130,14 @@ class AddDialog(object):
 
 
 class OptionsDialog(object):
-    spin_ids = ['max_download_speed', 'max_upload_speed', 'stop_ratio']
+    spin_ids = ['max_download_speed', 'max_upload_speed', 'stop_ratio', 'stop_time']
     spin_int_ids = ['max_upload_slots', 'max_connections']
     chk_ids = [
         'apply_max',
         'apply_queue',
         'stop_at_ratio',
+        'stop_at_time',
+        'stop_after_ratio_and_time',
         'apply_queue',
         'remove_at_ratio',
         'apply_move_completed',
@@ -155,8 +157,8 @@ class OptionsDialog(object):
                 'max_connections',
             ],
         ),
-        ('apply_queue', ['is_auto_managed', 'stop_at_ratio']),
-        ('stop_at_ratio', ['remove_at_ratio', 'stop_ratio']),  # nested
+        ('apply_queue', ['is_auto_managed', 'stop_at_ratio', 'stop_at_time']),
+        ('stop_at_ratio', ['remove_at_ratio', 'stop_ratio', 'stop_time', 'stop_after_ratio_and_time']),  # nested
         ('apply_move_completed', ['move_completed']),
         ('move_completed', ['move_completed_path']),  # nested
         ('auto_add', ['auto_add_trackers']),

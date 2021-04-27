@@ -42,8 +42,11 @@ class OptionsTab(Tab):
         )
         self.add_tab_widget('chk_auto_managed', 'active', ['auto_managed'])
         self.add_tab_widget('chk_stop_at_ratio', 'active', ['stop_at_ratio'])
+        self.add_tab_widget('chk_stop_at_time', 'active', ['stop_at_time'])
+        self.add_tab_widget('chk_stop_after_ratio_and_time', 'active', ['stop_after_ratio_and_time'])
         self.add_tab_widget('chk_remove_at_ratio', 'active', ['remove_at_ratio'])
         self.add_tab_widget('spin_stop_ratio', 'value', ['stop_ratio'])
+        self.add_tab_widget('spin_stop_time', 'value', ['stop_time'])
         self.add_tab_widget('chk_move_completed', 'active', ['move_completed'])
         self.add_tab_widget('chk_shared', 'active', ['shared'])
         self.add_tab_widget('summary_owner', 'text', ['owner'])
@@ -168,8 +171,15 @@ class OptionsTab(Tab):
             self.tab_widgets['spin_stop_ratio'].obj.set_sensitive(
                 new_status['stop_at_ratio']
             )
+            self.tab_widgets['spin_stop_time'].obj.set_sensitive(
+                new_status['stop_at_time']
+            )
             self.tab_widgets['chk_remove_at_ratio'].obj.set_sensitive(
-                new_status['stop_at_ratio']
+                #True if either 'stop_at_ratio' or 'stop_at_time' are enabled
+                new_status['stop_at_ratio'] or new_status['stop_at_time']
+            )
+            self.tab_widgets['chk_stop_after_ratio_and_time'].obj.set_sensitive(
+                new_status['stop_at_ratio'] and new_status['stop_at_time']
             )
 
             # Ensure apply button sensitivity is set False.
@@ -203,7 +213,30 @@ class OptionsTab(Tab):
 
     def on_chk_stop_at_ratio_toggled(self, widget):
         self.tab_widgets['spin_stop_ratio'].obj.set_sensitive(widget.get_active())
-        self.tab_widgets['chk_remove_at_ratio'].obj.set_sensitive(widget.get_active())
+        self.tab_widgets['chk_remove_at_ratio'].obj.set_sensitive(
+            self.tab_widgets['chk_stop_at_ratio'].obj.get_active()
+            or self.tab_widgets['chk_stop_at_time'].obj.get_active()
+        )
+        
+        self.tab_widgets['chk_stop_after_ratio_and_time'].obj.set_sensitive(
+            self.tab_widgets['chk_stop_at_ratio'].obj.get_active()
+            and self.tab_widgets['chk_stop_at_time'].obj.get_active()
+        )
+        
+        self.on_chk_toggled(widget)
+
+    def on_chk_stop_at_time_toggled(self, widget):
+        self.tab_widgets['spin_stop_time'].obj.set_sensitive(widget.get_active())
+        self.tab_widgets['chk_remove_at_ratio'].obj.set_sensitive(
+            self.tab_widgets['chk_stop_at_ratio'].obj.get_active()
+            or self.tab_widgets['chk_stop_at_time'].obj.get_active()
+        )
+        
+        self.tab_widgets['chk_stop_after_ratio_and_time'].obj.set_sensitive(
+            self.tab_widgets['chk_stop_at_ratio'].obj.get_active()
+            and self.tab_widgets['chk_stop_at_time'].obj.get_active()
+        )
+
         self.on_chk_toggled(widget)
 
     def on_chk_toggled(self, widget):

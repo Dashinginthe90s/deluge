@@ -975,6 +975,17 @@ also delete the .torrent file used to add it.</property>
                                         <signal name="toggled" handler="on_toggle_toggled" swapped="no"/>
                                       </object>
                                     </child>
+                                    <child>
+                                      <object class="GtkCheckButton" id="stop_at_time_toggle">
+                                        <property name="label" translatable="yes">Stop seed at time:</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">False</property>
+                                        <property name="use_underline">True</property>
+                                        <property name="draw_indicator">True</property>
+                                        <signal name="toggled" handler="on_toggle_toggled" swapped="no"/>
+                                      </object>
+                                    </child>
                                   </object>
                                   <packing>
                                     <property name="top_attach">3</property>
@@ -992,6 +1003,16 @@ also delete the .torrent file used to add it.</property>
                                     <child>
                                       <object class="GtkCheckButton" id="remove_at_ratio">
                                         <property name="label" translatable="yes">Remove at ratio</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">False</property>
+                                        <property name="use_underline">True</property>
+                                        <property name="draw_indicator">True</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkCheckButton" id="stop_after_ratio_and_time">
+                                        <property name="label" translatable="yes">Stop after time and ratio</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
@@ -1041,6 +1062,24 @@ also delete the .torrent file used to add it.</property>
                                   </packing>
                                 </child>
                                 <child>
+                                  <object class="GtkCheckButton" id="stop_after_ratio_and_time_toggle">
+                                    <property name="sensitive">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="active">True</property>
+                                    <property name="draw_indicator">True</property>
+                                  </object>
+                                  <packing>
+                                    <property name="left_attach">2</property>
+                                    <property name="right_attach">3</property>
+                                    <property name="top_attach">4</property>
+                                    <property name="bottom_attach">5</property>
+                                    <property name="x_options">GTK_FILL</property>
+                                    <property name="y_options"/>
+                                  </packing>
+                                </child>
+                                <child>
                                   <object class="GtkCheckButton" id="stop_ratio_toggle">
                                     <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
@@ -1059,7 +1098,44 @@ also delete the .torrent file used to add it.</property>
                                   </packing>
                                 </child>
                                 <child>
+                                  <object class="GtkCheckButton" id="stop_time_toggle">
+                                    <property name="sensitive">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="active">True</property>
+                                    <property name="draw_indicator">True</property>
+                                  </object>
+                                  <packing>
+                                    <property name="left_attach">1</property>
+                                    <property name="right_attach">2</property>
+                                    <property name="top_attach">4</property>
+                                    <property name="bottom_attach">5</property>
+                                    <property name="x_options">GTK_FILL</property>
+                                    <property name="y_options"/>
+                                  </packing>
+                                </child>
+                                <child>
                                   <object class="GtkSpinButton" id="stop_ratio">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="invisible_char">●</property>
+                                    <property name="primary_icon_activatable">False</property>
+                                    <property name="secondary_icon_activatable">False</property>
+                                    <property name="adjustment">adjustment5</property>
+                                    <property name="climb_rate">1</property>
+                                    <property name="digits">1</property>
+                                  </object>
+                                  <packing>
+                                    <property name="left_attach">1</property>
+                                    <property name="right_attach">2</property>
+                                    <property name="top_attach">3</property>
+                                    <property name="bottom_attach">4</property>
+                                    <property name="y_options"/>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkSpinButton" id="stop_time">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="invisible_char">●</property>
@@ -1126,6 +1202,24 @@ also delete the .torrent file used to add it.</property>
                                 </child>
                                 <child>
                                   <object class="GtkCheckButton" id="stop_at_ratio">
+                                    <property name="sensitive">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="active">True</property>
+                                    <property name="draw_indicator">True</property>
+                                  </object>
+                                  <packing>
+                                    <property name="left_attach">2</property>
+                                    <property name="right_attach">3</property>
+                                    <property name="top_attach">3</property>
+                                    <property name="bottom_attach">4</property>
+                                    <property name="x_options">GTK_FILL</property>
+                                    <property name="y_options"/>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkCheckButton" id="stop_at_time">
                                     <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>

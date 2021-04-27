@@ -188,6 +188,19 @@ Deluge.preferences.Queue = Ext.extend(Ext.form.FormPanel, {
         });
         this.stopAtRatio.on('check', this.onStopRatioCheck, this);
         om.bind('stop_seed_at_ratio', this.stopAtRatio);
+        
+        this.stopAtTime = fieldset.add({
+            name: 'stop_seed_at_time',
+            boxLabel: _('Share Time:'),
+        });
+        this.stopAtTime.on('check', this.onStopTimeCheck, this);
+        om.bind('stop_seed_at_time', this.stopAtTime);
+        
+        this.stopAfterRatioAndTime = fieldset.add({
+            name: 'stop_seed_after_ratio_and_time',
+            boxLabel: _('Stop after ratio and time'),
+        });
+        om.bind('stop_seed_after_ratio_and_time', this.stopAfterRatioAndTime);
 
         this.stopRatio = fieldset.add({
             xtype: 'spinnerfield',
@@ -203,6 +216,21 @@ Deluge.preferences.Queue = Ext.extend(Ext.form.FormPanel, {
             decimalPrecision: 2,
         });
         om.bind('stop_seed_ratio', this.stopRatio);
+
+        this.stopRatio = fieldset.add({
+            xtype: 'spinnerfield',
+            name: 'stop_seed_time',
+            ctCls: 'x-deluge-indent-checkbox',
+            disabled: true,
+            value: '2.0',
+            width: 60,
+            incrementValue: 0.1,
+            minValue: -1,
+            maxValue: 99999,
+            alternateIncrementValue: 1,
+            decimalPrecision: 2,
+        });
+        om.bind('stop_seed_time', this.stopTime);
 
         this.removeAtRatio = fieldset.add({
             xtype: 'radiogroup',
@@ -229,6 +257,29 @@ Deluge.preferences.Queue = Ext.extend(Ext.form.FormPanel, {
 
     onStopRatioCheck: function (e, checked) {
         this.stopRatio.setDisabled(!checked);
-        this.removeAtRatio.setDisabled(!checked);
+        if (checked || this.stopAtTime.checked) {
+            this.removeAtRatio.setDisabled(false);
+        } else {
+            this.removeAtRatio.setDisabled(true);
+        }
+        if (checked && this.stopAtTime.checked) {
+            this.stopAfterRatioAndTime.setDisabled(false);
+        } else {
+            this.stopAfterRatioAndTime.setDisabled(true);
+        }
+    },
+
+    onStopTimeCheck: function (e, checked) {
+        this.stopTime.setDisabled(!checked);
+        if (checked || this.stopAtRatio.checked) {
+            this.removeAtRatio.setDisabled(false);
+        } else {
+            this.removeAtRatio.setDisabled(true);
+        }
+        if (checked && this.stopAtRatio.checked) {
+            this.stopAfterRatioAndTime.setDisabled(false);
+        } else {
+            this.stopAfterRatioAndTime.setDisabled(true);
+        }
     },
 });

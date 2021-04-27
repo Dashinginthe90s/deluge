@@ -628,10 +628,32 @@ class QueuePane(BasePreferencePane):
             seedratio,
             core_conf['stop_seed_at_ratio'],
         )
+        seedtime = FloatSpinInput(
+            self.mode,
+            'stop_seed_time',
+            '',
+            self.move,
+            core_conf['stop_seed_time'],
+            precision=2,
+            inc_amt=0.1,
+            min_val=0.5,
+            max_val=100.0,
+        )
+        self.add_checkedplus_input(
+            'stop_seed_at_time',
+            '%s:' % _('Share Time Reached'),
+            seedtime,
+            core_conf['stop_seed_at_time'],
+        )
         self.add_checked_input(
             'remove_seed_at_ratio',
             _('Remove torrent (Unchecked pauses torrent)'),
             core_conf['remove_seed_at_ratio'],
+        )
+        self.add_checked_input(
+            'stop_seed_atfter_ratio_and_time',
+            _('Stop torrent after reacing ratio and time'),
+            core_conf['stop_seed_after_ratio_and_time'],
         )
 
 

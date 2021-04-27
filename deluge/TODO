@@ -1,0 +1,7 @@
+Add remove after seed time
+Add hardlink support
+Add label plugin sets download folder
+Add move after seed
+Add execute based on label
+Move seeding torrent when changing move completed
+Add time seeding column

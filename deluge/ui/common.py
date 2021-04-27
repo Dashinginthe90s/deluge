@@ -96,7 +96,10 @@ TORRENT_DATA_FIELD = {
     'is_auto_managed': {'name': _('Auto Managed'), 'status': ['is_auto_managed']},
     'auto_managed': {'name': _('Auto Managed'), 'status': ['auto_managed']},
     'stop_at_ratio': {'name': _('Stop At Ratio'), 'status': ['stop_at_ratio']},
+    'stop_at_time': {'name': _('Stop At Time'), 'status': ['stop_at_time']},
+    'stop_after_ratio_and_time': {'name': _('Stop After Ratio and Time'), 'status': ['stop_after_ratio_and_time']},
     'stop_ratio': {'name': _('Stop Ratio'), 'status': ['stop_ratio']},
+    'stop_time': {'name': _('Stop Time'), 'status': ['stop_time']},
     'remove_at_ratio': {'name': _('Remove At Ratio'), 'status': ['remove_at_ratio']},
     'move_completed': {'name': _('Move On Completed'), 'status': ['move_completed']},
     'move_completed_path': {

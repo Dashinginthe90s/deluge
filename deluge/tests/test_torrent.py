@@ -309,6 +309,7 @@ class TorrentTestCase(BaseTestCase):
         result = self.torrent.get_eta()
         self.assertEqual(result, 2)
         self.assertIsInstance(result, int)
+        #TODO add tests for 'stop_at_time'
 
     def test_get_eta_downloading(self):
         atp = self.get_torrent_atp('test_torrent.file.torrent')

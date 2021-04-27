@@ -42,10 +42,12 @@ class IncompatibleOption(Exception):
 
 
 class OptionsDialog(object):
-    spin_ids = ['max_download_speed', 'max_upload_speed', 'stop_ratio']
+    spin_ids = ['max_download_speed', 'max_upload_speed', 'stop_ratio', 'stop_time']
     spin_int_ids = ['max_upload_slots', 'max_connections']
     chk_ids = [
         'stop_at_ratio',
+        'stop_at_time',
+        'stop_after_ratio_and_time',
         'remove_at_ratio',
         'move_completed',
         'add_paused',
@@ -265,6 +267,7 @@ class OptionsDialog(object):
             'add_paused',
             'auto_managed',
             'stop_at_ratio',
+            'stop_at_time',
             'queue_to_top',
             'copy_torrent',
         ]
@@ -311,11 +314,32 @@ class OptionsDialog(object):
             self.builder.get_object('auto_managed').set_sensitive(isactive)
             self.builder.get_object('isnt_auto_managed').set_sensitive(isactive)
         elif toggle == 'stop_at_ratio':
-            self.builder.get_object('remove_at_ratio_toggle').set_active(isactive)
+            self.builder.get_object('remove_at_ratio_toggle').set_active(activate_remove_at_ratio())
             self.builder.get_object('stop_ratio_toggle').set_active(isactive)
             self.builder.get_object('stop_at_ratio').set_active(isactive)
             self.builder.get_object('stop_ratio').set_sensitive(isactive)
-            self.builder.get_object('remove_at_ratio').set_sensitive(isactive)
+            self.builder.get_object('remove_at_ratio').set_sensitive(activate_remove_at_ratio())
+            self.builder.get_object('stop_after_ratio_and_time').set_sensitive(activate_stop_after_ratio_and_time())
+        elif toggle == 'stop_at_time':
+            self.builder.get_object('remove_at_ratio_toggle').set_active(activate_remove_at_ratio())
+            self.builder.get_object('stop_time_toggle').set_active(isactive)
+            self.builder.get_object('stop_at_time').set_active(isactive)
+            self.builder.get_object('stop_time').set_sensitive(isactive)
+            self.builder.get_object('remove_at_ratio').set_sensitive(activate_remove_at_ratio())
+            self.builder.get_object('stop_after_ratio_and_time').set_sensitive(activate_stop_after_ratio_and_time())
+
+    def activate_remove_at_ratio(self):
+        return (
+            self.builder.get.object('stop_at_ratio').isactive()
+            or self.builder.get.object('stop_at_time').isactive()
+        )
+
+    def activate_stop_after_ratio_and_time(self):
+        return (
+            self.builder.get.object('stop_at_ratio').isactive()
+            and self.builder.get.object('stop_at_time').isactive()
+        )
+    #TODO cleanup
 
     def on_apply(self, event=None):
         try:

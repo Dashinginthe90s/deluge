@@ -20,10 +20,12 @@ Deluge.ux.AutoAdd.AutoAddWindowBase = Ext.extend(Ext.Window, {
     autoHeight: true,
     closeAction: 'hide',
 
-    spin_ids: ['max_download_speed', 'max_upload_speed', 'stop_ratio'],
+    spin_ids: ['max_download_speed', 'max_upload_speed', 'stop_ratio', 'stop_time'],
     spin_int_ids: ['max_upload_slots', 'max_connections'],
     chk_ids: [
         'stop_at_ratio',
+        'stop_at_time',
+        'stop_after_ratio_and_time',
         'remove_at_ratio',
         'move_completed',
         'add_paused',

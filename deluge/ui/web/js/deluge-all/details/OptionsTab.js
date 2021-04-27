@@ -42,7 +42,10 @@ Deluge.details.OptionsTab = Ext.extend(Ext.form.FormPanel, {
                 max_upload_slots: -1,
                 auto_managed: false,
                 stop_at_ratio: false,
+                stop_at_time: false,
+                stop_after_ratio_and_time: false,
                 stop_ratio: 2.0,
+                stop_time: 48.00,
                 remove_at_ratio: false,
                 move_completed: false,
                 move_completed_path: '',
@@ -207,6 +210,16 @@ Deluge.details.OptionsTab = Ext.extend(Ext.form.FormPanel, {
             scope: this,
         });
 
+        this.fields.stop_at_time = this.fieldsets.queue.add({
+            fieldLabel: '',
+            labelSeparator: '',
+            id: 'stop_at_time',
+            width: 120,
+            boxLabel: _('Stop seed at time:'),
+            handler: this.onStopTimeChecked,
+            scope: this,
+        });
+
         this.fields.stop_ratio = this.fieldsets.queue.add({
             xtype: 'spinnerfield',
             id: 'stop_ratio',
@@ -224,6 +237,23 @@ Deluge.details.OptionsTab = Ext.extend(Ext.form.FormPanel, {
             },
         });
 
+        this.fields.stop_time = this.fieldsets.queue.add({
+            xtype: 'spinnerfield',
+            id: 'stop_time',
+            name: 'stop_time',
+            disabled: true,
+            width: 50,
+            value: 48.0,
+            strategy: {
+                xtype: 'number',
+                minValue: -1,
+                maxValue: 99999,
+                incrementValue: 0.1,
+                alternateIncrementValue: 1,
+                decimalPrecision: 1,
+            },
+        });
+
         this.fields.remove_at_ratio = this.fieldsets.queue.add({
             fieldLabel: '',
             labelSeparator: '',
@@ -231,6 +261,17 @@ Deluge.details.OptionsTab = Ext.extend(Ext.form.FormPanel, {
             ctCls: 'x-deluge-indent-checkbox',
             bodyStyle: 'padding-left: 10px',
             boxLabel: _('Remove at ratio'),
+            disabled: true,
+            colspan: 2,
+        });
+
+        this.fields.stop_after_ratio_and_time = this.fieldsets.queue.add({
+            fieldLabel: '',
+            labelSeparator: '',
+            id: 'stop_after_ratio_and_time',
+            ctCls: 'x-deluge-indent-checkbox',
+            bodyStyle: 'padding-left: 10px',
+            boxLabel: _('Remove stop after ratio and time'),
             disabled: true,
             colspan: 2,
         });
@@ -395,8 +436,47 @@ Deluge.details.OptionsTab = Ext.extend(Ext.form.FormPanel, {
     },
 
     onStopRatioChecked: function (checkbox, checked) {
-        this.fields.remove_at_ratio.setDisabled(!checked);
         this.fields.stop_ratio.setDisabled(!checked);
+        
+        if (
+            checked
+            || this.fields.stop_at_time.checked
+        ) {
+            this.fields.remove_at_ratio.setDisabled(false);
+        } else {
+            this.fields.remove_at_ratio.setDisabled(true);
+        }
+        
+        if (
+            checked
+            && this.fields.stop_at_time.checked
+        ) {
+            this.fields.stop_after_ratio_and_time.setDisabled(false);
+        } else {
+            this.fields.stop_after_ratio_and_time.setDisabled(true);
+        }
+    },
+
+    onStopTimeChecked: function (checkbox, checked) {
+        this.fields.stop_time.setDisabled(!checked);
+        
+        if (
+            checked
+            || this.fields.stop_at_ratio.checked
+        ) {
+            this.fields.remove_at_ratio.setDisabled(false);
+        } else {
+            this.fields.remove_at_ratio.setDisabled(true);
+        }
+        
+        if (
+            checked
+            && this.fields.stop_at_ratio.checked
+        ) {
+            this.fields.stop_after_ratio_and_time.setDisabled(false);
+        } else {
+            this.fields.stop_after_ratio_and_time.setDisabled(true);
+        }
     },
 
     onRequestComplete: function (torrent, options) {
@@ -408,10 +488,29 @@ Deluge.details.OptionsTab = Ext.extend(Ext.form.FormPanel, {
             torrent['prioritize_first_last'];
         this.optionsManager.setDefault(torrent);
         var stop_at_ratio = this.optionsManager.get('stop_at_ratio');
-        this.fields.remove_at_ratio.setDisabled(!stop_at_ratio);
+        var stop_at_time = this.optionsManager.get('stop_at_time');
         this.fields.stop_ratio.setDisabled(!stop_at_ratio);
+        this.fields.stop_time.setDisabled(!stop_at_time);
         this.fields.move_completed_path.setDisabled(
             !this.optionsManager.get('move_completed')
         );
+
+        if (
+            stop_at_ratio
+            || stop_at_time
+        ) {
+            this.fields.remove_at_ratio.setDisabled(false);
+        } else {
+            this.fields.remove_at_ratio.setDisabled(true);
+        }
+
+        if (
+            stop_at_ratio
+            && stop_at_time
+        ) {
+            this.fields.stop_after_ratio_and_time.setDisabled(false);
+        } else {
+            this.fields.stop_after_ratio_and_time.setDisabled(true);
+        }
     },
 });

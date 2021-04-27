@@ -156,7 +156,10 @@ class TorrentOptions(dict):
         sequential_download (bool): Download the pieces of the torrent in order.
         shared (bool): Enable the torrent to be seen by other Deluge users.
         stop_at_ratio (bool): Stop the torrent when it has reached stop_ratio.
+        stop_at_time (bool): Stop the torrent when it has reacted stop_time.
+        stop_after_ratio_and_time (bool): Stop the torrent when it has reached both stop_ratio and stop_time.
         stop_ratio (float): The seeding ratio to stop (or remove) the torrent at.
+        stop_time (int): The seeding time to stop (or remove) the torrent at.
         super_seeding (bool): Enable super seeding/initial seeding.
     """
 
@@ -179,7 +182,10 @@ class TorrentOptions(dict):
             'sequential_download': 'sequential_download',
             'shared': 'shared',
             'stop_at_ratio': 'stop_seed_at_ratio',
+            'stop_at_time': 'stop_seed_at_time',
+            'stop_after_ratio_and_time': 'stop_seed_after_ratio_and_time',
             'stop_ratio': 'stop_seed_ratio',
+            'stop_time': 'stop_seed_ratio',
             'super_seeding': 'super_seeding',
         }
         for opt_k, conf_k in options_conf_map.items():
@@ -468,6 +474,14 @@ class Torrent(object):
         """
         self.options['stop_ratio'] = stop_ratio
 
+    def set_stop_time(self, stop_time):
+        """The seeding time to stop (or remove) the torrent at.
+
+        Args:
+            stop_time (float): The seeding time.
+        """
+        self.options['stop_time'] = stop_time
+
     def set_stop_at_ratio(self, stop_at_ratio):
         """Stop the torrent when it has reached stop_ratio.
 
@@ -475,6 +489,22 @@ class Torrent(object):
             stop_at_ratio (bool): Stop the torrent.
         """
         self.options['stop_at_ratio'] = stop_at_ratio
+
+    def set_stop_at_time(self, stop_at_time):
+        """Stop the torrent when it has reached stop_time.
+
+        Args:
+            stop_at_time (bool): Stop the torrent.
+        """
+        self.options['stop_at_time'] = stop_at_time
+
+    def set_stop_after_ratio_and_time(self, stop_after_ratio_and_time):
+        """Stop the torrent when it has reached stop_ratio and stop_time.
+
+        Args:
+            stop_after_ratio_and_time (bool): Stop the torrent.
+        """
+        self.options['stop_after_ratio_and_time'] = stop_after_ratio_and_time
 
     def set_remove_at_ratio(self, remove_at_ratio):
         """Remove the torrent when it has reached the stop_ratio.
@@ -731,14 +761,30 @@ class Torrent(object):
         eta = 0
         if (
             self.is_finished
-            and self.options['stop_at_ratio']
+            and (self.options['stop_at_ratio'] or self.options['stop_at_time'])
             and status.upload_payload_rate
         ):
-            # We're a seed, so calculate the time to the 'stop_share_ratio'
-            eta = (
-                int(status.all_time_download * self.options['stop_ratio'])
-                - status.all_time_upload
-            ) // status.upload_payload_rate
+            # We're a seed, so calculate the time to 'stop_ratio' and 'stop_time' 
+            eta_to_ratio = 0
+            eta_to_time = 0
+
+            if self.options['stop_at_ratio']:
+                eta_to_ratio = (
+                    int(status.all_time_download * self.options['stop_ratio'])
+                    - status.all_time_upload
+                ) // status.upload_payload_rate
+            
+            if self.option['stop_at_time']:
+                eta_to_time = self.options['stop_time'] - self.status.seeding_duration
+
+            if (
+                self.options['stop_after_ratio_and_time']
+                or not (self.options['stop_at_ratio'] and self.options['stop_at_time'])
+            ):
+                eta = max(eta_to_ratio, eta_to_time)
+            else:
+                eta = min(eta_to_ratio, eta_to_time)
+        
         elif status.download_payload_rate:
             left = status.total_wanted - status.total_wanted_done
             if left > 0:
@@ -758,6 +804,15 @@ class Torrent(object):
             return self.status.all_time_upload / self.status.total_done
         else:
             return -1.0
+
+    def get_seeding_time(self):
+        """Get how long the torrent has been seeding
+
+        Returns:
+            int: The time in seconds
+
+        """
+        return self.status.seeding_duration
 
     def get_files(self):
         """Get the files this torrent contains.
@@ -1097,7 +1152,10 @@ class Torrent(object):
             'seed_rank': lambda: self.status.seed_rank,
             'state': lambda: self.state,
             'stop_at_ratio': lambda: self.options['stop_at_ratio'],
+            'stop_at_time': lambda: self.options['stop_at_time'],
+            'stop_after_ratio_and_time': lambda: self.options['stop_after_ratio_and_time'],
             'stop_ratio': lambda: self.options['stop_ratio'],
+            'stop_time': lambda: self.options['stop_time'],
             'time_added': lambda: self.status.added_time,
             'total_done': lambda: self.status.total_done,
             'total_payload_download': lambda: self.status.total_payload_download,
@@ -1190,7 +1248,13 @@ class Torrent(object):
             and self.options['stop_at_ratio']
             and self.get_ratio() >= self.options['stop_ratio']
         ):
-            log.debug('Resume skipped for torrent as it has reached "stop_seed_ratio".')
+            log.debug('Resume skipped for torrent as it has reached "stop_ratio".')
+        elif (
+            self.status.is_finished
+            and self.options['stop_at_time']
+            and self.get_seeding_time() >= self.options['stop_time']
+        ):
+            log.debug('Resume skipped for torrent as it has reached "stop_time".')
         else:
             # Check if torrent was originally being auto-managed.
             if self.options['auto_managed']:
